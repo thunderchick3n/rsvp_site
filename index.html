@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSVP.care — Some messages are too important to leave unsent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --cream: #FFFDF9;
+            --ink: #1E1E2E;
+            --ink-light: #6B7280;
+            --sage: #6B8F71;
+            --sage-light: #EEF4EF;
+            --sage-dark: #4A6B50;
+            --border: #E8E4DC;
+            --white: #FFFFFF;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            line-height: 1.6;
+        }
+
+        /* ── Nav ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 253, 249, 0.92);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-family: 'Lora', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: -0.02em;
+            text-decoration: none;
+        }
+        .logo span { color: var(--sage); }
+
+        .nav-cta {
+            background: var(--sage);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.25rem;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .nav-cta:hover { background: var(--sage-dark); }
+
+        /* ── Hero ── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 2rem 6rem;
+        }
+
+        .hero-inner { max-width: 680px; }
+
+        .hero-eyebrow {
+            display: inline-block;
+            background: var(--sage-light);
+            color: var(--sage-dark);
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-family: 'Lora', serif;
+            font-size: clamp(2.25rem, 5vw, 3.5rem);
+            font-weight: 600;
+            line-height: 1.2;
+            color: var(--ink);
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+        h1 em {
+            font-style: italic;
+            color: var(--sage-dark);
+        }
+
+        .hero-sub {
+            font-size: 1.125rem;
+            color: var(--ink-light);
+            max-width: 520px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+        }
+
+        /* ── Waitlist form ── */
+        .waitlist-wrap { max-width: 440px; margin: 0 auto; }
+
+        .waitlist-form {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .waitlist-form input[type="email"] {
+            flex: 1;
+            padding: 0.85rem 1.1rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            background: white;
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .waitlist-form input[type="email"]:focus { border-color: var(--sage); }
+        .waitlist-form input[type="email"]::placeholder { color: #9CA3AF; }
+
+        .waitlist-form button {
+            background: var(--sage);
+            color: white;
+            border: none;
+            padding: 0.85rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+        .waitlist-form button:hover { background: var(--sage-dark); }
+
+        .form-note {
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+            color: var(--ink-light);
+        }
+
+        .form-success {
+            display: none;
+            background: var(--sage-light);
+            border: 1px solid #C4DACD;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            color: var(--sage-dark);
+            font-size: 0.95rem;
+        }
+
+        /* ── Sections ── */
+        section { padding: 6rem 2rem; }
+
+        .section-inner { max-width: 900px; margin: 0 auto; }
+
+        .section-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--sage);
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-family: 'Lora', serif;
+            font-size: clamp(1.75rem, 3vw, 2.5rem);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .section-sub {
+            font-size: 1.05rem;
+            color: var(--ink-light);
+            max-width: 540px;
+            line-height: 1.7;
+            margin-bottom: 3.5rem;
+        }
+
+        /* ── How it works ── */
+        .how-section {
+            background: white;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .step { display: flex; flex-direction: column; gap: 0.75rem; }
+
+        .step-num {
+            width: 42px; height: 42px;
+            background: var(--sage-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Lora', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--sage-dark);
+        }
+
+        .step h3 {
+            font-family: 'Lora', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .step p {
+            font-size: 0.95rem;
+            color: var(--ink-light);
+            line-height: 1.65;
+        }
+
+        /* ── Vault ── */
+        .vault-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .vault-card {
+            background: white;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .vault-card:hover { border-color: var(--sage); transform: translateY(-3px); }
+
+        .vault-icon { font-size: 1.75rem; line-height: 1; }
+
+        .vault-card h3 {
+            font-family: 'Lora', serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .vault-card p {
+            font-size: 0.875rem;
+            color: var(--ink-light);
+            line-height: 1.6;
+        }
+
+        /* ── Trust ── */
+        .trust-section {
+            background: var(--ink);
+            color: white;
+        }
+
+        .trust-section h2 { color: white; }
+        .trust-section .section-label { color: var(--sage); }
+        .trust-section .section-sub { color: #9CA3AF; }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .trust-item { display: flex; flex-direction: column; gap: 0.5rem; }
+
+        .trust-item h4 {
+            font-family: 'Lora', serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .trust-item p {
+            font-size: 0.875rem;
+            color: #9CA3AF;
+            line-height: 1.6;
+        }
+
+        /* ── CTA section ── */
+        .cta-section { text-align: center; }
+        .cta-section .section-inner { max-width: 600px; }
+        .cta-section .section-sub { margin: 0 auto 2.5rem; }
+
+        /* ── Footer ── */
+        footer {
+            padding: 2.5rem 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-logo {
+            font-family: 'Lora', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--ink);
+            text-decoration: none;
+        }
+        .footer-logo span { color: var(--sage); }
+
+        .footer-note {
+            font-size: 0.8rem;
+            color: var(--ink-light);
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 600px) {
+            nav { padding: 1rem 1.25rem; }
+            section { padding: 4rem 1.25rem; }
+            .waitlist-form { flex-direction: column; }
+            footer { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+    <a href="#top" class="logo">RSVP<span>.care</span></a>
+    <a href="#waitlist" class="nav-cta">Join the waitlist</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="top">
+    <div class="hero-inner">
+        <div class="hero-eyebrow">Now accepting early access</div>
+        <h1>Some messages are too important<br><em>to leave unsent.</em></h1>
+        <p class="hero-sub">
+            RSVP is a simple check-in service. If you stop checking in,
+            the people you love hear from you — exactly as you intended.
+        </p>
+
+        <div class="waitlist-wrap">
+            <form class="waitlist-form" id="heroForm">
+                <input type="email" placeholder="your@email.com" required>
+                <button type="submit">Get early access</button>
+            </form>
+            <div class="form-success" id="heroSuccess">
+                ✓ You're on the list. We'll be in touch soon.
+            </div>
+            <p class="form-note">No spam. No pressure. Just a spot in line.</p>
+        </div>
+    </div>
+</section>
+
+<!-- How it works -->
+<section class="how-section">
+    <div class="section-inner">
+        <div class="section-label">How it works</div>
+        <h2>Simple by design.</h2>
+        <p class="section-sub">
+            Three steps. No complexity. Just the peace of mind that comes
+            from knowing you've taken care of the people who matter most.
+        </p>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <h3>Check in regularly</h3>
+                <p>A quick tap or click confirms you're here. You choose the schedule — weekly, monthly, whatever fits your life.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <h3>We check on you</h3>
+                <p>If you miss a check-in, RSVP reaches out before anything triggers. Life happens — we give you grace.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <h3>Your messages are delivered</h3>
+                <p>Letters, passwords, account details — sent to the right people, at the right time, exactly as you wrote them.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Vault -->
+<section>
+    <div class="section-inner">
+        <div class="section-label">Your vault</div>
+        <h2>Everything they'll need to know.</h2>
+        <p class="section-sub">
+            Store more than words. RSVP holds the full picture — from heartfelt letters
+            to the practical details that matter just as much.
+        </p>
+
+        <div class="vault-grid">
+            <div class="vault-card">
+                <div class="vault-icon">✉️</div>
+                <h3>Personal letters</h3>
+                <p>Write the things you've always meant to say. They arrive when they're needed most.</p>
+            </div>
+            <div class="vault-card">
+                <div class="vault-icon">🔑</div>
+                <h3>Passwords &amp; accounts</h3>
+                <p>Bank logins, email credentials, crypto keys — safely stored and passed on to the right hands.</p>
+            </div>
+            <div class="vault-card">
+                <div class="vault-icon">📋</div>
+                <h3>Wishes &amp; instructions</h3>
+                <p>Final wishes, care directives, what to do with the dog. All of it, organized and ready.</p>
+            </div>
+            <div class="vault-card">
+                <div class="vault-icon">🎞️</div>
+                <h3>Photos &amp; videos</h3>
+                <p>A last message. A memory. A face they can hold on to.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Trust -->
+<section class="trust-section">
+    <div class="section-inner">
+        <div class="section-label">Built for trust</div>
+        <h2>Your vault, your rules.</h2>
+        <p class="section-sub">
+            We never read your messages. We never sell your data.
+            We're just the safest way to make sure the right people hear from you.
+        </p>
+
+        <div class="trust-grid">
+            <div class="trust-item">
+                <h4>End-to-end encrypted</h4>
+                <p>Your messages are encrypted before they leave your device. We can't read them even if we wanted to.</p>
+            </div>
+            <div class="trust-item">
+                <h4>You control everything</h4>
+                <p>Update your messages, add recipients, or cancel anytime. No questions asked, no hoops to jump through.</p>
+            </div>
+            <div class="trust-item">
+                <h4>Multiple confirmations</h4>
+                <p>We check on you before anything is sent. Missed a check-in? We'll reach out more than once.</p>
+            </div>
+            <div class="trust-item">
+                <h4>No dark patterns</h4>
+                <p>No confusing settings. No cancellation maze. This service exists for you — not the other way around.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Waitlist CTA -->
+<section class="cta-section" id="waitlist">
+    <div class="section-inner">
+        <div class="section-label">Early access</div>
+        <h2>Be the first to know.</h2>
+        <p class="section-sub">
+            RSVP is in development. Join the waitlist and we'll reach out
+            when it's ready — no spam, no pressure.
+        </p>
+
+        <div class="waitlist-wrap" style="margin: 0 auto;">
+            <form class="waitlist-form" id="ctaForm">
+                <input type="email" placeholder="your@email.com" required>
+                <button type="submit">Join the waitlist</button>
+            </form>
+            <div class="form-success" id="ctaSuccess">
+                ✓ You're on the list. We'll be in touch soon.
+            </div>
+            <p class="form-note">Unsubscribe anytime.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <a href="#top" class="footer-logo">RSVP<span>.care</span></a>
+    <p class="footer-note">© 2026 RSVP.care &nbsp;·&nbsp; Making sure you're heard.</p>
+</footer>
+
+<script>
+    function bindForm(formId, successId) {
+        const form = document.getElementById(formId);
+        const success = document.getElementById(successId);
+        if (!form) return;
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = form.querySelector('input[type="email"]').value;
+            // TODO: wire up to real backend / Formspree endpoint
+            console.log('Waitlist signup:', email);
+            form.style.display = 'none';
+            success.style.display = 'block';
+
+            // Sync both forms so double-signup isn't possible
+            document.querySelectorAll('.waitlist-form').forEach(f => f.style.display = 'none');
+            document.querySelectorAll('.form-success').forEach(s => s.style.display = 'block');
+        });
+    }
+
+    bindForm('heroForm', 'heroSuccess');
+    bindForm('ctaForm', 'ctaSuccess');
+</script>
+
+</body>
+</html>
