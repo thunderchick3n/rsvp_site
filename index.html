@@ -500,20 +500,36 @@
 </footer>
 
 <script>
+    const SHEET_ENDPOINT = 'PASTE_YOUR_APPS_SCRIPT_URL_HERE';
+
     function bindForm(formId, successId) {
         const form = document.getElementById(formId);
         const success = document.getElementById(successId);
         if (!form) return;
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
             const email = form.querySelector('input[type="email"]').value;
-            // TODO: wire up to real backend / Formspree endpoint
-            console.log('Waitlist signup:', email);
-            form.style.display = 'none';
-            success.style.display = 'block';
+            const btn = form.querySelector('button');
+            btn.textContent = 'Saving...';
+            btn.disabled = true;
 
-            // Sync both forms so double-signup isn't possible
+            try {
+                await fetch(SHEET_ENDPOINT, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        timestamp: new Date().toISOString(),
+                        source: document.referrer || 'direct'
+                    })
+                });
+            } catch (err) {
+                console.warn('Signup fetch error:', err);
+            }
+
+            // Show success regardless (no-cors means we can't read response)
             document.querySelectorAll('.waitlist-form').forEach(f => f.style.display = 'none');
             document.querySelectorAll('.form-success').forEach(s => s.style.display = 'block');
         });
